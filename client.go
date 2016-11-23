@@ -2071,7 +2071,7 @@ func (c *pipelineConnClient) logger() Logger {
 	if c.Logger != nil {
 		return c.Logger
 	}
-	return defaultLogger
+	return DefaultLogger
 }
 
 // PendingRequests returns the current number of pending requests pipelined

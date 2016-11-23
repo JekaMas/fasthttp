@@ -1326,7 +1326,12 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 	if len(b) == 0 {
 		// treat all errors on the first byte read as EOF
 		if n == 1 || err == io.EOF {
-			fmt.Println("ERROR IN tryRead 1", n, spew.Sdump(r), spew.Sdump(err), spew.Sdump(h))
+			spew.Dump("ERROR IN tryRead 1")
+			spew.Dump(r, err, h)
+			if DefaultLogger != nil {
+				DefaultLogger.Printf("ERROR IN tryRead 1 %v %v %v\n", spew.Sdump(r, err, h))
+			}
+
 			return io.EOF
 		}
 
@@ -1337,13 +1342,23 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 			}
 		}
 
-		fmt.Println("ERROR IN tryRead 2", n, spew.Sdump(r), spew.Sdump(err), spew.Sdump(h), spew.Sdump(h))
+		spew.Dump("ERROR IN tryRead 2")
+		spew.Dump(r, err, h)
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 2 %v %v %v\n", spew.Sdump(r, err, h))
+		}
+
 		return fmt.Errorf("error when reading request headers: %s", err)
 	}
 	b = mustPeekBuffered(r)
 	headersLen, errParse := h.parse(b)
 	if errParse != nil {
-		fmt.Println("ERROR IN tryRead 3", n, spew.Sdump(r), spew.Sdump(err))
+		spew.Dump("ERROR IN tryRead 3")
+		spew.Dump(r, err, h)
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 3 %v %v %v\n", spew.Sdump(r, err, h))
+		}
+
 		return headerError("request", err, errParse, b)
 	}
 	mustDiscard(r, headersLen)

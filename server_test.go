@@ -1436,7 +1436,7 @@ func TestServeConnNonHTTP11KeepAlive(t *testing.T) {
 func TestRequestCtxSetBodyStreamWriter(t *testing.T) {
 	var ctx RequestCtx
 	var req Request
-	ctx.Init(&req, nil, defaultLogger)
+	ctx.Init(&req, nil, DefaultLogger)
 
 	if ctx.IsBodyStream() {
 		t.Fatalf("IsBodyStream must return false")
@@ -1470,7 +1470,7 @@ func TestRequestCtxSetBodyStreamWriter(t *testing.T) {
 func TestRequestCtxIfModifiedSince(t *testing.T) {
 	var ctx RequestCtx
 	var req Request
-	ctx.Init(&req, nil, defaultLogger)
+	ctx.Init(&req, nil, DefaultLogger)
 
 	lastModified := time.Now().Add(-time.Hour)
 
@@ -1498,7 +1498,7 @@ func TestRequestCtxIfModifiedSince(t *testing.T) {
 func TestRequestCtxSendFileNotModified(t *testing.T) {
 	var ctx RequestCtx
 	var req Request
-	ctx.Init(&req, nil, defaultLogger)
+	ctx.Init(&req, nil, DefaultLogger)
 
 	filePath := "./server_test.go"
 	lastModified, err := FileLastModified(filePath)
@@ -1527,7 +1527,7 @@ func TestRequestCtxSendFileNotModified(t *testing.T) {
 func TestRequestCtxSendFileModified(t *testing.T) {
 	var ctx RequestCtx
 	var req Request
-	ctx.Init(&req, nil, defaultLogger)
+	ctx.Init(&req, nil, DefaultLogger)
 
 	filePath := "./server_test.go"
 	lastModified, err := FileLastModified(filePath)
@@ -1568,7 +1568,7 @@ func TestRequestCtxSendFileModified(t *testing.T) {
 func TestRequestCtxSendFile(t *testing.T) {
 	var ctx RequestCtx
 	var req Request
-	ctx.Init(&req, nil, defaultLogger)
+	ctx.Init(&req, nil, DefaultLogger)
 
 	filePath := "./server_test.go"
 	ctx.SendFile(filePath)

@@ -1336,13 +1336,13 @@ func wrapPerIPConn(s *Server, c net.Conn) net.Conn {
 	return acquirePerIPConn(c, ip, &s.perIPConnCounter)
 }
 
-var defaultLogger = Logger(log.New(os.Stderr, "", log.LstdFlags))
+var DefaultLogger = Logger(log.New(os.Stderr, "", log.LstdFlags))
 
 func (s *Server) logger() Logger {
 	if s.Logger != nil {
 		return s.Logger
 	}
-	return defaultLogger
+	return DefaultLogger
 }
 
 var (
@@ -1885,7 +1885,7 @@ func (ctx *RequestCtx) Init(req *Request, remoteAddr net.Addr, logger Logger) {
 		raddr: remoteAddr,
 	}
 	if logger == nil {
-		logger = defaultLogger
+		logger = DefaultLogger
 	}
 	ctx.Init2(c, logger, true)
 	req.CopyTo(&ctx.Request)
