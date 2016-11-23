@@ -1329,7 +1329,7 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 			spew.Dump("ERROR IN tryRead 1")
 			spew.Dump(r, err, h)
 			if DefaultLogger != nil {
-				DefaultLogger.Printf("ERROR IN tryRead 1 %v %v %v\n", spew.Sdump(r, err, h))
+				DefaultLogger.Printf("ERROR IN tryRead 1 %v\n", spew.Sdump(r, err, h))
 			}
 
 			return io.EOF
@@ -1345,7 +1345,7 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 		spew.Dump("ERROR IN tryRead 2")
 		spew.Dump(r, err, h)
 		if DefaultLogger != nil {
-			DefaultLogger.Printf("ERROR IN tryRead 2 %v %v %v\n", spew.Sdump(r, err, h))
+			DefaultLogger.Printf("ERROR IN tryRead 2 %v\n", spew.Sdump(r, err, h))
 		}
 
 		return fmt.Errorf("error when reading request headers: %s", err)
@@ -1356,7 +1356,7 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 		spew.Dump("ERROR IN tryRead 3")
 		spew.Dump(r, err, h)
 		if DefaultLogger != nil {
-			DefaultLogger.Printf("ERROR IN tryRead 3 %v %v %v\n", spew.Sdump(r, err, h))
+			DefaultLogger.Printf("ERROR IN tryRead 3 %v\n", spew.Sdump(r, err, h))
 		}
 
 		return headerError("request", err, errParse, b)
@@ -1597,6 +1597,9 @@ func (h *RequestHeader) noBody() bool {
 func (h *RequestHeader) parse(buf []byte) (int, error) {
 	m, err := h.parseFirstLine(buf)
 	if err != nil {
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 3 first line parse")
+		}
 		return 0, err
 	}
 
@@ -1604,6 +1607,9 @@ func (h *RequestHeader) parse(buf []byte) (int, error) {
 	if !h.noBody() || h.noHTTP11 {
 		n, err = h.parseHeaders(buf[m:])
 		if err != nil {
+			if DefaultLogger != nil {
+				DefaultLogger.Printf("ERROR IN tryRead 3 parseHeaders parse")
+			}
 			return 0, err
 		}
 		h.rawHeadersParsed = true
@@ -1611,6 +1617,9 @@ func (h *RequestHeader) parse(buf []byte) (int, error) {
 		var rawHeaders []byte
 		rawHeaders, n, err = readRawHeaders(h.rawHeaders[:0], buf[m:])
 		if err != nil {
+			if DefaultLogger != nil {
+				DefaultLogger.Printf("ERROR IN tryRead 3 readRawHeaders")
+			}
 			return 0, err
 		}
 		h.rawHeaders = rawHeaders
@@ -1654,6 +1663,9 @@ func (h *RequestHeader) parseFirstLine(buf []byte) (int, error) {
 	var err error
 	for len(b) == 0 {
 		if b, bNext, err = nextLine(bNext); err != nil {
+			if DefaultLogger != nil {
+				DefaultLogger.Printf("ERROR IN tryRead 3 parseFirstLine\n")
+			}
 			return 0, err
 		}
 	}
@@ -1928,6 +1940,9 @@ func (s *headerScanner) next() bool {
 	n := bytes.IndexByte(s.b, ':')
 	if n < 0 {
 		s.err = errNeedMore
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 3 headerScanner.next errNeedMore ':'\n")
+		}
 		return false
 	}
 	s.key = s.b[:n]
@@ -1940,6 +1955,9 @@ func (s *headerScanner) next() bool {
 	n = bytes.IndexByte(s.b, '\n')
 	if n < 0 {
 		s.err = errNeedMore
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 3 headerScanner.next errNeedMore '/\n'\n")
+		}
 		return false
 	}
 	s.value = s.b[:n]
@@ -2000,6 +2018,9 @@ func hasHeaderValue(s, value []byte) bool {
 func nextLine(b []byte) ([]byte, []byte, error) {
 	nNext := bytes.IndexByte(b, '\n')
 	if nNext < 0 {
+		if DefaultLogger != nil {
+			DefaultLogger.Printf("ERROR IN tryRead 3 nextLine\n")
+		}
 		return nil, nil, errNeedMore
 	}
 	n := nNext
