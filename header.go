@@ -8,6 +8,8 @@ import (
 	"io"
 	"sync/atomic"
 	"time"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 // ResponseHeader represents HTTP response header.
@@ -1324,6 +1326,7 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 	if len(b) == 0 {
 		// treat all errors on the first byte read as EOF
 		if n == 1 || err == io.EOF {
+			fmt.Println("ERROR IN tryRead 1", n, spew.Sdump(r), spew.Sdump(err))
 			return io.EOF
 		}
 
@@ -1334,6 +1337,7 @@ func (h *RequestHeader) tryRead(r *bufio.Reader, n int) error {
 			}
 		}
 
+		fmt.Println("ERROR IN tryRead 2", n, spew.Sdump(r), spew.Sdump(err))
 		return fmt.Errorf("error when reading request headers: %s", err)
 	}
 	b = mustPeekBuffered(r)
